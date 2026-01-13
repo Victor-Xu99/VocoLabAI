@@ -298,7 +298,8 @@ export default function DemoPage() {
     } else {
       setCurrentSentenceIndex(nextIndex);
       setRetriesRemaining(2); // Reset retries for new sentence
-      setState("idle");
+      // Automatically start recording the next sentence
+      await startRecording(true);
     }
   };
 
