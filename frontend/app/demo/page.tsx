@@ -49,6 +49,67 @@ const exerciseInstructions = [
   "Read at a normal pace",
 ];
 
+// Exercise feedback messages
+const exerciseFeedback = {
+  slow: [
+    "That was a little fast, try it even slower",
+    "Try reading it more slowly",
+    "Take your time, read it slower",
+    "That sounded good, but try going even slower",
+  ],
+  fast: [
+    "That was a little slow, try picking up the pace",
+    "Try reading it a bit faster",
+    "Good, but try speeding up a little",
+  ],
+  perfect: [
+    "That sounded perfect!",
+    "Excellent! That was great!",
+    "Perfect pronunciation!",
+    "That was spot on!",
+    "Wonderful! Keep it up!",
+  ],
+  general: [
+    "Good attempt, try again with more emphasis",
+    "Try pausing more between words",
+    "Focus on clarity, try again",
+    "Good, but try to be more precise",
+  ],
+};
+
+function getExerciseFeedbackMessage(instruction: string): string {
+  // Determine feedback based on instruction or random
+  const instructionLower = instruction.toLowerCase();
+
+  if (instructionLower.includes("slow")) {
+    // For slow instructions, might be too fast
+    const feedbacks = [
+      ...exerciseFeedback.slow,
+      ...exerciseFeedback.perfect, // Sometimes it's perfect
+    ];
+    return feedbacks[Math.floor(Math.random() * feedbacks.length)];
+  } else if (
+    instructionLower.includes("pause") ||
+    instructionLower.includes("syllable")
+  ) {
+    // For pause/syllable instructions
+    const feedbacks = [
+      ...exerciseFeedback.general,
+      ...exerciseFeedback.perfect,
+    ];
+    return feedbacks[Math.floor(Math.random() * feedbacks.length)];
+  } else {
+    // General feedback - mix of all types
+    const allFeedbacks = [
+      ...exerciseFeedback.slow,
+      ...exerciseFeedback.fast,
+      ...exerciseFeedback.perfect,
+      ...exerciseFeedback.general,
+    ];
+    return allFeedbacks[Math.floor(Math.random() * allFeedbacks.length)];
+  }
+}
+
 function getRandomExercises(
   count: number
 ): Array<{ sentence: string; instruction: string }> {
@@ -88,6 +149,7 @@ export default function DemoPage() {
     Array<{ sentence: string; instruction: string }>
   >([]);
   const [currentExerciseIndex, setCurrentExerciseIndex] = useState<number>(0);
+  const [exerciseFeedback, setExerciseFeedback] = useState<string>("");
 
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const audioChunksRef = useRef<Blob[]>([]);
@@ -229,6 +291,15 @@ export default function DemoPage() {
         setAudioBlob(blob);
         const url = URL.createObjectURL(blob);
         setAudioUrl(url);
+
+        // Generate feedback for exercises
+        if (exerciseList.length > 0 && exerciseList[currentExerciseIndex]) {
+          const feedback = getExerciseFeedbackMessage(
+            exerciseList[currentExerciseIndex].instruction
+          );
+          setExerciseFeedback(feedback);
+        }
+
         setState("completed");
       };
 
@@ -296,7 +367,8 @@ export default function DemoPage() {
   };
 
   const retryRecording = async () => {
-    if (retriesRemaining <= 0) return;
+    // For exercises, allow infinite retries (don't check retriesRemaining)
+    if (exerciseList.length === 0 && retriesRemaining <= 0) return;
 
     // Clean up previous recording
     if (audioUrl) {
@@ -309,9 +381,12 @@ export default function DemoPage() {
     }
     setAudioBlob(null);
     setRecordingTime(0);
+    setExerciseFeedback("");
 
-    // Decrement retries
-    setRetriesRemaining(retriesRemaining - 1);
+    // Decrement retries only for regular sentences (not exercises)
+    if (exerciseList.length === 0) {
+      setRetriesRemaining(retriesRemaining - 1);
+    }
 
     // Start recording again (retry mode)
     await startRecording(true);
@@ -355,6 +430,7 @@ export default function DemoPage() {
     setRecordingTime(0);
     setAudioBlob(null);
     setDiagnosis("");
+    setExerciseFeedback("");
     if (audioUrl) {
       URL.revokeObjectURL(audioUrl);
       setAudioUrl(null);
@@ -390,6 +466,7 @@ export default function DemoPage() {
     }
     setAudioBlob(null);
     setRecordingTime(0);
+    setExerciseFeedback("");
 
     const nextIndex = currentExerciseIndex + 1;
 
@@ -548,69 +625,173 @@ export default function DemoPage() {
                     </div>
                   )
                 )}
-                <div className="relative">
-                  <div className="absolute inset-0 bg-gradient-to-r from-green-500/30 to-green-500/30 blur-2xl rounded-full" />
-                  <div className="w-16 h-16 relative z-10 bg-green-500 rounded-full flex items-center justify-center">
-                    <svg
-                      className="w-8 h-8 text-white"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M5 13l4 4L19 7"
-                      />
-                    </svg>
-                  </div>
-                </div>
-                <div className="text-center space-y-2">
-                  <h2 className="text-2xl font-semibold">
-                    Recording Complete!
-                  </h2>
-                  <p className="text-muted-foreground">
-                    You recorded: "{sentence}"
-                  </p>
-                </div>
-                {audioUrl && (
-                  <div className="w-full max-w-md space-y-4">
-                    <audio
-                      ref={audioRef}
-                      src={audioUrl}
-                      controls
-                      className="w-full"
-                    />
-                    <p className="text-sm text-muted-foreground text-center">
-                      Duration: {formatTime(recordingTime)}
-                    </p>
-                  </div>
+
+                {exerciseList.length > 0 ? (
+                  // Exercise feedback UI
+                  <>
+                    <div className="relative">
+                      {exerciseFeedback.toLowerCase().includes("perfect") ||
+                      exerciseFeedback.toLowerCase().includes("excellent") ||
+                      exerciseFeedback.toLowerCase().includes("wonderful") ||
+                      exerciseFeedback.toLowerCase().includes("spot on") ? (
+                        <div className="absolute inset-0 bg-gradient-to-r from-green-500/30 to-green-500/30 blur-2xl rounded-full" />
+                      ) : (
+                        <div className="absolute inset-0 bg-gradient-to-r from-yellow-500/30 to-orange-500/30 blur-2xl rounded-full" />
+                      )}
+                      <div
+                        className={`w-16 h-16 relative z-10 rounded-full flex items-center justify-center ${
+                          exerciseFeedback.toLowerCase().includes("perfect") ||
+                          exerciseFeedback
+                            .toLowerCase()
+                            .includes("excellent") ||
+                          exerciseFeedback
+                            .toLowerCase()
+                            .includes("wonderful") ||
+                          exerciseFeedback.toLowerCase().includes("spot on")
+                            ? "bg-green-500"
+                            : "bg-yellow-500"
+                        }`}
+                      >
+                        {exerciseFeedback.toLowerCase().includes("perfect") ||
+                        exerciseFeedback.toLowerCase().includes("excellent") ||
+                        exerciseFeedback.toLowerCase().includes("wonderful") ||
+                        exerciseFeedback.toLowerCase().includes("spot on") ? (
+                          <svg
+                            className="w-8 h-8 text-white"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M5 13l4 4L19 7"
+                            />
+                          </svg>
+                        ) : (
+                          <svg
+                            className="w-8 h-8 text-white"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                            />
+                          </svg>
+                        )}
+                      </div>
+                    </div>
+                    <div className="text-center space-y-2">
+                      <h2 className="text-2xl font-semibold">Feedback</h2>
+                      <div className="bg-muted rounded-lg p-6 max-w-2xl">
+                        <p className="text-xl font-semibold text-foreground">
+                          {exerciseFeedback}
+                        </p>
+                      </div>
+                    </div>
+                    {audioUrl && (
+                      <div className="w-full max-w-md space-y-4">
+                        <audio
+                          ref={audioRef}
+                          src={audioUrl}
+                          controls
+                          className="w-full"
+                        />
+                        <p className="text-sm text-muted-foreground text-center">
+                          Duration: {formatTime(recordingTime)}
+                        </p>
+                      </div>
+                    )}
+                    <div className="flex gap-4">
+                      <Button
+                        onClick={retryRecording}
+                        variant="outline"
+                        size="lg"
+                        className="gap-2"
+                      >
+                        <RotateCcw className="w-5 h-5" />
+                        Retry
+                      </Button>
+                      <Button
+                        onClick={nextExercise}
+                        size="lg"
+                        className="gap-2"
+                      >
+                        Move on to next exercise
+                        <ArrowRight className="w-5 h-5" />
+                      </Button>
+                    </div>
+                  </>
+                ) : (
+                  // Regular sentence completion UI
+                  <>
+                    <div className="relative">
+                      <div className="absolute inset-0 bg-gradient-to-r from-green-500/30 to-green-500/30 blur-2xl rounded-full" />
+                      <div className="w-16 h-16 relative z-10 bg-green-500 rounded-full flex items-center justify-center">
+                        <svg
+                          className="w-8 h-8 text-white"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M5 13l4 4L19 7"
+                          />
+                        </svg>
+                      </div>
+                    </div>
+                    <div className="text-center space-y-2">
+                      <h2 className="text-2xl font-semibold">
+                        Recording Complete!
+                      </h2>
+                      <p className="text-muted-foreground">
+                        You recorded: "{sentence}"
+                      </p>
+                    </div>
+                    {audioUrl && (
+                      <div className="w-full max-w-md space-y-4">
+                        <audio
+                          ref={audioRef}
+                          src={audioUrl}
+                          controls
+                          className="w-full"
+                        />
+                        <p className="text-sm text-muted-foreground text-center">
+                          Duration: {formatTime(recordingTime)}
+                        </p>
+                      </div>
+                    )}
+                    <div className="flex gap-4">
+                      <Button
+                        onClick={retryRecording}
+                        variant="outline"
+                        size="lg"
+                        className="gap-2"
+                        disabled={retriesRemaining <= 0}
+                      >
+                        <RotateCcw className="w-5 h-5" />
+                        Retry? ({retriesRemaining}{" "}
+                        {retriesRemaining === 1 ? "try" : "tries"} left)
+                      </Button>
+                      <Button
+                        onClick={nextSentence}
+                        size="lg"
+                        className="gap-2"
+                      >
+                        Move on to next sentence
+                        <ArrowRight className="w-5 h-5" />
+                      </Button>
+                    </div>
+                  </>
                 )}
-                <div className="flex gap-4">
-                  <Button
-                    onClick={retryRecording}
-                    variant="outline"
-                    size="lg"
-                    className="gap-2"
-                    disabled={retriesRemaining <= 0}
-                  >
-                    <RotateCcw className="w-5 h-5" />
-                    Retry? ({retriesRemaining}{" "}
-                    {retriesRemaining === 1 ? "try" : "tries"} left)
-                  </Button>
-                  {exerciseList.length > 0 ? (
-                    <Button onClick={nextExercise} size="lg" className="gap-2">
-                      Move on to next exercise
-                      <ArrowRight className="w-5 h-5" />
-                    </Button>
-                  ) : (
-                    <Button onClick={nextSentence} size="lg" className="gap-2">
-                      Move on to next sentence
-                      <ArrowRight className="w-5 h-5" />
-                    </Button>
-                  )}
-                </div>
               </div>
             )}
 
