@@ -1,70 +1,71 @@
-"use client"
+"use client";
 
-import React, { useEffect, useState } from "react"
-import { motion } from "motion/react"
-import Link from "next/link"
-import { usePathname } from "next/navigation"
-import { Home, DollarSign, Info, Download } from "lucide-react"
-import { cn } from "@/lib/utils"
+import React, { useEffect, useState } from "react";
+import { motion } from "motion/react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { Home, DollarSign, Info, Download, PlayCircle } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 interface NavItem {
-  name: string
-  url: string
-  icon?: any
+  name: string;
+  url: string;
+  icon?: any;
 }
 
 interface NavBarProps {
-  className?: string
+  className?: string;
 }
 
 export function NavBar({ className }: NavBarProps) {
-  const pathname = usePathname()
+  const pathname = usePathname();
   const items: NavItem[] = [
     { name: "Home", url: "/", icon: Home },
+    { name: "Demo", url: "/demo", icon: PlayCircle },
     { name: "Pricing", url: "/pricing", icon: DollarSign },
     { name: "About", url: "#about", icon: Info },
     { name: "Download", url: "#download", icon: Download },
   ];
-  
-  const [isMobile, setIsMobile] = useState(false)
-  
+
+  const [isMobile, setIsMobile] = useState(false);
+
   // Determine active tab based on current pathname
   const getActiveTab = () => {
-    const currentItem = items.find(item => {
-      if (item.url === "/") return pathname === "/"
-      return pathname.startsWith(item.url) && item.url !== "/"
-    })
-    return currentItem?.name || items[0].name
-  }
-  
-  const [activeTab, setActiveTab] = useState(getActiveTab())
-  
+    const currentItem = items.find((item) => {
+      if (item.url === "/") return pathname === "/";
+      return pathname.startsWith(item.url) && item.url !== "/";
+    });
+    return currentItem?.name || items[0].name;
+  };
+
+  const [activeTab, setActiveTab] = useState(getActiveTab());
+
   // Update active tab when pathname changes
   useEffect(() => {
-    setActiveTab(getActiveTab())
-  }, [pathname])
+    setActiveTab(getActiveTab());
+  }, [pathname]);
 
   useEffect(() => {
     const handleResize = () => {
-      setIsMobile(window.innerWidth < 768)
-    }
+      setIsMobile(window.innerWidth < 768);
+    };
 
-    handleResize()
-    window.addEventListener("resize", handleResize)
-    return () => window.removeEventListener("resize", handleResize)
-  }, [])
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   return (
     <div
       className={cn(
         "fixed top-0 left-1/2 -translate-x-1/2 z-50 pt-6",
-        className,
+        className
       )}
     >
       <div className="flex items-center gap-3 bg-background/5 border border-border backdrop-blur-lg py-1 px-1 rounded-full shadow-lg">
         {items.map((item) => {
-          const Icon = item.icon
-          const isActive = activeTab === item.name
+          const Icon = item.icon;
+          const isActive = activeTab === item.name;
 
           return (
             <Link
@@ -74,7 +75,7 @@ export function NavBar({ className }: NavBarProps) {
               className={cn(
                 "relative cursor-pointer text-sm font-semibold px-6 py-2 rounded-full transition-colors",
                 "text-foreground/80 hover:text-primary",
-                isActive && "bg-muted text-primary",
+                isActive && "bg-muted text-primary"
               )}
             >
               {Icon && isMobile ? (
@@ -101,9 +102,9 @@ export function NavBar({ className }: NavBarProps) {
                 </motion.div>
               )}
             </Link>
-          )
+          );
         })}
       </div>
     </div>
-  )
+  );
 }
