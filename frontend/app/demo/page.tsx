@@ -8,6 +8,8 @@ import {
   RotateCcw,
   Loader2,
   ArrowRight,
+  Brain,
+  Activity,
 } from "lucide-react";
 import { NavBar } from "@/components/ui/tubelight-navbar";
 import { Footer } from "@/components/ui/footer-section";
@@ -38,7 +40,13 @@ function getRandomSentences(count: number): string[] {
   return shuffled.slice(0, Math.min(count, practiceSentences.length));
 }
 
-type DemoState = "idle" | "recording" | "processing" | "completed" | "finished";
+type DemoState =
+  | "idle"
+  | "recording"
+  | "processing"
+  | "completed"
+  | "analyzing"
+  | "diagnosis";
 
 export default function DemoPage() {
   const [state, setState] = useState<DemoState>("idle");
@@ -50,12 +58,35 @@ export default function DemoPage() {
   const [audioBlob, setAudioBlob] = useState<Blob | null>(null);
   const [audioUrl, setAudioUrl] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [diagnosis, setDiagnosis] = useState<string>("");
 
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const audioChunksRef = useRef<Blob[]>([]);
   const streamRef = useRef<MediaStream | null>(null);
   const timerRef = useRef<number | null>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
+
+  // Handle analyzing -> diagnosis transition after 3 seconds
+  useEffect(() => {
+    if (state === "analyzing") {
+      const timer = window.setTimeout(() => {
+        // Generate a random diagnosis (for demo purposes)
+        const diagnoses = [
+          "It sounds like you have a slight lisp",
+          "You may have difficulty with 'th' sounds",
+          "Your pronunciation shows minor issues with 'r' sounds",
+          "There are some challenges with consonant clusters",
+          "You might benefit from focusing on vowel clarity",
+        ];
+        const randomDiagnosis =
+          diagnoses[Math.floor(Math.random() * diagnoses.length)];
+        setDiagnosis(randomDiagnosis);
+        setState("diagnosis");
+      }, 3000);
+
+      return () => window.clearTimeout(timer);
+    }
+  }, [state]);
 
   // Cleanup on unmount
   useEffect(() => {
@@ -262,8 +293,8 @@ export default function DemoPage() {
     const nextIndex = currentSentenceIndex + 1;
 
     if (nextIndex >= sentenceList.length) {
-      // All sentences completed
-      setState("finished");
+      // All sentences completed - start analyzing
+      setState("analyzing");
     } else {
       setCurrentSentenceIndex(nextIndex);
       setRetriesRemaining(2); // Reset retries for new sentence
@@ -279,6 +310,7 @@ export default function DemoPage() {
     setSentence("");
     setRecordingTime(0);
     setAudioBlob(null);
+    setDiagnosis("");
     if (audioUrl) {
       URL.revokeObjectURL(audioUrl);
       setAudioUrl(null);
@@ -288,6 +320,12 @@ export default function DemoPage() {
       audioRef.current = null;
     }
     setError(null);
+  };
+
+  const moveToExercises = () => {
+    // TODO: Navigate to exercises page when implemented
+    // For now, just reset the demo
+    resetDemo();
   };
 
   const formatTime = (seconds: number): string => {
@@ -464,36 +502,52 @@ export default function DemoPage() {
               </div>
             )}
 
-            {state === "finished" && (
+            {state === "analyzing" && (
+              <div className="flex flex-col items-center justify-center space-y-6">
+                <div className="relative">
+                  <div className="absolute inset-0 bg-gradient-to-r from-primary/30 to-primary/30 blur-2xl rounded-full animate-pulse" />
+                  <Brain className="w-16 h-16 relative z-10 text-primary animate-pulse" />
+                </div>
+                <div className="text-center space-y-2">
+                  <h2 className="text-2xl font-semibold">
+                    Analyzing Your Speech
+                  </h2>
+                  <p className="text-muted-foreground">
+                    Our AI backend is processing your recordings and calculating
+                    your pronunciation patterns...
+                  </p>
+                </div>
+                <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                  <Activity className="w-4 h-4 animate-pulse" />
+                  <span>Processing audio data</span>
+                </div>
+              </div>
+            )}
+
+            {state === "diagnosis" && (
               <div className="flex flex-col items-center justify-center space-y-6">
                 <div className="relative">
                   <div className="absolute inset-0 bg-gradient-to-r from-primary/30 to-primary/30 blur-2xl rounded-full" />
                   <div className="w-16 h-16 relative z-10 bg-primary rounded-full flex items-center justify-center">
-                    <svg
-                      className="w-8 h-8 text-white"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M5 13l4 4L19 7"
-                      />
-                    </svg>
+                    <Brain className="w-8 h-8 text-white" />
                   </div>
                 </div>
                 <div className="text-center space-y-2">
-                  <h2 className="text-2xl font-semibold">Demo Complete!</h2>
-                  <p className="text-muted-foreground">
-                    You've completed all {sentenceList.length} sentences. Great
-                    job!
+                  <h2 className="text-2xl font-semibold">Diagnosis Complete</h2>
+                  <div className="bg-muted rounded-lg p-6 max-w-2xl mt-4">
+                    <p className="text-lg font-semibold text-primary mb-2">
+                      Analysis Result:
+                    </p>
+                    <p className="text-xl text-foreground">{diagnosis}</p>
+                  </div>
+                  <p className="text-muted-foreground text-sm mt-4">
+                    Based on your {sentenceList.length} recordings, our AI has
+                    identified areas for improvement.
                   </p>
                 </div>
-                <Button onClick={resetDemo} size="lg" className="gap-2">
-                  <RotateCcw className="w-5 h-5" />
-                  Start Over
+                <Button onClick={moveToExercises} size="lg" className="gap-2">
+                  Move on to exercises
+                  <ArrowRight className="w-5 h-5" />
                 </Button>
               </div>
             )}
