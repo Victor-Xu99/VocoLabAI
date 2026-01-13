@@ -40,13 +40,38 @@ function getRandomSentences(count: number): string[] {
   return shuffled.slice(0, Math.min(count, practiceSentences.length));
 }
 
+// Exercise instructions
+const exerciseInstructions = [
+  "Read slowly",
+  "Read and pause between every syllable",
+  "Emphasize each word clearly",
+  "Read with exaggerated pronunciation",
+  "Read at a normal pace",
+];
+
+function getRandomExercises(
+  count: number
+): Array<{ sentence: string; instruction: string }> {
+  const shuffled = [...practiceSentences].sort(() => Math.random() - 0.5);
+  const selected = shuffled.slice(0, Math.min(count, practiceSentences.length));
+  return selected.map((sentence) => ({
+    sentence,
+    instruction:
+      exerciseInstructions[
+        Math.floor(Math.random() * exerciseInstructions.length)
+      ],
+  }));
+}
+
 type DemoState =
   | "idle"
   | "recording"
   | "processing"
   | "completed"
+  | "exercises"
   | "analyzing"
-  | "diagnosis";
+  | "diagnosis"
+  | "finished";
 
 export default function DemoPage() {
   const [state, setState] = useState<DemoState>("idle");
@@ -59,6 +84,10 @@ export default function DemoPage() {
   const [audioUrl, setAudioUrl] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [diagnosis, setDiagnosis] = useState<string>("");
+  const [exerciseList, setExerciseList] = useState<
+    Array<{ sentence: string; instruction: string }>
+  >([]);
+  const [currentExerciseIndex, setCurrentExerciseIndex] = useState<number>(0);
 
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const audioChunksRef = useRef<Blob[]>([]);
@@ -142,14 +171,26 @@ export default function DemoPage() {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
       streamRef.current = stream;
 
-      // Use current sentence from list
-      const sentencesToUse = sentenceList.length > 0 ? sentenceList : [];
-      if (sentencesToUse.length === 0) {
-        setError("No sentences available. Please refresh the page.");
-        setState("idle");
-        return;
+      // Use current sentence from list (either regular sentences or exercises)
+      let currentSentence = "";
+      if (exerciseList.length > 0) {
+        // In exercises mode
+        if (currentExerciseIndex >= exerciseList.length) {
+          setError("No more exercises available.");
+          setState("exercises");
+          return;
+        }
+        currentSentence = exerciseList[currentExerciseIndex].sentence;
+      } else {
+        // Regular sentence mode
+        const sentencesToUse = sentenceList.length > 0 ? sentenceList : [];
+        if (sentencesToUse.length === 0) {
+          setError("No sentences available. Please refresh the page.");
+          setState("idle");
+          return;
+        }
+        currentSentence = sentencesToUse[currentSentenceIndex];
       }
-      const currentSentence = sentencesToUse[currentSentenceIndex];
       setSentence(currentSentence);
 
       // Find supported mimeType
@@ -307,6 +348,8 @@ export default function DemoPage() {
     setState("idle");
     setSentenceList([]);
     setCurrentSentenceIndex(0);
+    setExerciseList([]);
+    setCurrentExerciseIndex(0);
     setRetriesRemaining(2);
     setSentence("");
     setRecordingTime(0);
@@ -323,10 +366,47 @@ export default function DemoPage() {
     setError(null);
   };
 
+  const startExercises = () => {
+    // Generate random exercises
+    const exercises = getRandomExercises(5); // 5 exercises
+    setExerciseList(exercises);
+    setCurrentExerciseIndex(0);
+    setState("exercises");
+  };
+
+  const startExerciseRecording = async () => {
+    await startRecording(true);
+  };
+
+  const nextExercise = async () => {
+    // Clean up previous recording
+    if (audioUrl) {
+      URL.revokeObjectURL(audioUrl);
+      setAudioUrl(null);
+    }
+    if (audioRef.current) {
+      audioRef.current.pause();
+      audioRef.current = null;
+    }
+    setAudioBlob(null);
+    setRecordingTime(0);
+
+    const nextIndex = currentExerciseIndex + 1;
+
+    if (nextIndex >= exerciseList.length) {
+      // All exercises completed - show completion message
+      setState("finished");
+    } else {
+      setCurrentExerciseIndex(nextIndex);
+      setRetriesRemaining(2);
+      // Go back to exercises state to show the next exercise
+      setState("exercises");
+    }
+  };
+
   const moveToExercises = () => {
-    // TODO: Navigate to exercises page when implemented
-    // For now, just reset the demo
-    resetDemo();
+    // This is called from diagnosis screen - navigate to exercises
+    startExercises();
   };
 
   const formatTime = (seconds: number): string => {
@@ -392,10 +472,17 @@ export default function DemoPage() {
 
             {state === "recording" && (
               <div className="flex flex-col items-center justify-center space-y-6">
-                {sentenceList.length > 0 && (
+                {exerciseList.length > 0 ? (
                   <div className="text-sm text-muted-foreground">
-                    Sentence {currentSentenceIndex + 1} of {sentenceList.length}
+                    Exercise {currentExerciseIndex + 1} of {exerciseList.length}
                   </div>
+                ) : (
+                  sentenceList.length > 0 && (
+                    <div className="text-sm text-muted-foreground">
+                      Sentence {currentSentenceIndex + 1} of{" "}
+                      {sentenceList.length}
+                    </div>
+                  )
                 )}
                 <div className="relative">
                   <div className="absolute inset-0 bg-gradient-to-r from-red-500/30 to-red-500/30 blur-2xl rounded-full animate-pulse" />
@@ -408,8 +495,18 @@ export default function DemoPage() {
                   </p>
                 </div>
                 <div className="bg-muted rounded-lg p-6 w-full max-w-2xl">
+                  {exerciseList.length > 0 &&
+                    exerciseList[currentExerciseIndex] && (
+                      <div className="mb-4 bg-primary/10 border border-primary/20 rounded-lg p-3">
+                        <p className="text-sm font-semibold text-primary text-center">
+                          {exerciseList[currentExerciseIndex].instruction}
+                        </p>
+                      </div>
+                    )}
                   <p className="text-xl font-semibold text-center mb-2">
-                    Pronounce this sentence:
+                    {exerciseList.length > 0
+                      ? "Read this sentence:"
+                      : "Pronounce this sentence:"}
                   </p>
                   <p className="text-2xl font-bold text-center text-primary">
                     "{sentence}"
@@ -439,10 +536,17 @@ export default function DemoPage() {
 
             {state === "completed" && (
               <div className="flex flex-col items-center justify-center space-y-6">
-                {sentenceList.length > 0 && (
+                {exerciseList.length > 0 ? (
                   <div className="text-sm text-muted-foreground">
-                    Sentence {currentSentenceIndex + 1} of {sentenceList.length}
+                    Exercise {currentExerciseIndex + 1} of {exerciseList.length}
                   </div>
+                ) : (
+                  sentenceList.length > 0 && (
+                    <div className="text-sm text-muted-foreground">
+                      Sentence {currentSentenceIndex + 1} of{" "}
+                      {sentenceList.length}
+                    </div>
+                  )
                 )}
                 <div className="relative">
                   <div className="absolute inset-0 bg-gradient-to-r from-green-500/30 to-green-500/30 blur-2xl rounded-full" />
@@ -495,9 +599,45 @@ export default function DemoPage() {
                     Retry? ({retriesRemaining}{" "}
                     {retriesRemaining === 1 ? "try" : "tries"} left)
                   </Button>
-                  <Button onClick={nextSentence} size="lg" className="gap-2">
-                    Move on to next sentence
-                    <ArrowRight className="w-5 h-5" />
+                  {exerciseList.length > 0 ? (
+                    <Button onClick={nextExercise} size="lg" className="gap-2">
+                      Move on to next exercise
+                      <ArrowRight className="w-5 h-5" />
+                    </Button>
+                  ) : (
+                    <Button onClick={nextSentence} size="lg" className="gap-2">
+                      Move on to next sentence
+                      <ArrowRight className="w-5 h-5" />
+                    </Button>
+                  )}
+                </div>
+              </div>
+            )}
+
+            {state === "exercises" && exerciseList.length > 0 && (
+              <div className="flex flex-col items-center justify-center space-y-6">
+                <div className="text-sm text-muted-foreground">
+                  Exercise {currentExerciseIndex + 1} of {exerciseList.length}
+                </div>
+                <div className="flex flex-col items-center justify-center space-y-4 w-full max-w-2xl">
+                  <div className="bg-muted rounded-lg p-6 w-full">
+                    <p className="text-xl font-semibold text-center mb-4">
+                      {exerciseList[currentExerciseIndex]?.sentence}
+                    </p>
+                    <div className="bg-primary/10 border border-primary/20 rounded-lg p-4">
+                      <p className="text-lg font-semibold text-primary text-center">
+                        Instruction:{" "}
+                        {exerciseList[currentExerciseIndex]?.instruction}
+                      </p>
+                    </div>
+                  </div>
+                  <Button
+                    onClick={startExerciseRecording}
+                    size="lg"
+                    className="gap-2"
+                  >
+                    <PlayCircle className="w-5 h-5" />
+                    Start Recording
                   </Button>
                 </div>
               </div>
@@ -547,8 +687,43 @@ export default function DemoPage() {
                   </p>
                 </div>
                 <Button onClick={moveToExercises} size="lg" className="gap-2">
-                  Move on to exercises
+                  Move on to exercises?
                   <ArrowRight className="w-5 h-5" />
+                </Button>
+              </div>
+            )}
+
+            {state === "finished" && (
+              <div className="flex flex-col items-center justify-center space-y-6">
+                <div className="relative">
+                  <div className="absolute inset-0 bg-gradient-to-r from-green-500/30 to-green-500/30 blur-2xl rounded-full" />
+                  <div className="w-16 h-16 relative z-10 bg-green-500 rounded-full flex items-center justify-center">
+                    <svg
+                      className="w-8 h-8 text-white"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M5 13l4 4L19 7"
+                      />
+                    </svg>
+                  </div>
+                </div>
+                <div className="text-center space-y-2">
+                  <h2 className="text-2xl font-semibold">Demo Complete!</h2>
+                  <p className="text-muted-foreground text-lg">Good job!</p>
+                  <p className="text-muted-foreground text-sm mt-2">
+                    You've completed all {sentenceList.length} sentences and{" "}
+                    {exerciseList.length} exercises. Great work!
+                  </p>
+                </div>
+                <Button onClick={resetDemo} size="lg" className="gap-2">
+                  <RotateCcw className="w-5 h-5" />
+                  Start Over
                 </Button>
               </div>
             )}
