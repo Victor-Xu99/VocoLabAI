@@ -22,8 +22,8 @@ export function NavBar({ className }: NavBarProps) {
   const items: NavItem[] = [
     { name: "Home", url: "/", icon: Home },
     { name: "Pricing", url: "/pricing", icon: DollarSign },
-    { name: "About", url: "#about", icon: Info },
-    { name: "Download", url: "#download", icon: Download },
+    { name: "About", url: "/about", icon: Info },
+    { name: "Download", url: "/download", icon: Download },
   ];
   
   const [isMobile, setIsMobile] = useState(false)
@@ -61,7 +61,7 @@ export function NavBar({ className }: NavBarProps) {
         className,
       )}
     >
-      <div className="flex items-center gap-3 bg-background/5 border border-border backdrop-blur-lg py-1 px-1 rounded-full shadow-lg">
+      <div className="flex items-center gap-3 bg-black/50 dark:bg-black/60 border border-white/10 backdrop-blur-lg py-1 px-1 rounded-full shadow-lg">
         {items.map((item) => {
           const Icon = item.icon
           const isActive = activeTab === item.name
@@ -73,8 +73,8 @@ export function NavBar({ className }: NavBarProps) {
               onClick={() => setActiveTab(item.name)}
               className={cn(
                 "relative cursor-pointer text-sm font-semibold px-6 py-2 rounded-full transition-colors",
-                "text-foreground/80 hover:text-primary",
-                isActive && "bg-muted text-primary",
+                "text-white/80 hover:text-white",
+                isActive && "bg-white/10 text-white",
               )}
             >
               {Icon && isMobile ? (
