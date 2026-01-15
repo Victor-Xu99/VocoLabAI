@@ -493,11 +493,19 @@ export default function DemoPage() {
   };
 
   return (
-    <main className="min-h-screen bg-gradient-to-b from-white to-gray-50 dark:from-gray-950 dark:to-gray-900">
+    <main className="min-h-screen bg-gradient-to-b from-background via-primary/5 to-background">
       <NavBar />
+      
+      {/* Decorative background elements */}
+      <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
+        <div className="absolute top-20 left-10 w-72 h-72 bg-primary/10 rounded-full blur-3xl animate-pulse" />
+        <div className="absolute bottom-20 right-10 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }} />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-primary/5 rounded-full blur-3xl" />
+      </div>
+
       <div className="pt-24">
         <div className="text-center py-12 px-4">
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight mb-4">
+          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight mb-4 bg-gradient-to-r from-primary via-purple-500 to-primary bg-clip-text text-transparent">
             Try VocoLabAI Demo
           </h1>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
@@ -505,7 +513,7 @@ export default function DemoPage() {
           </p>
         </div>
         <div className="container mx-auto px-4 py-12 max-w-4xl">
-          <div className="bg-card border border-border rounded-lg p-8 shadow-lg">
+          <div className="bg-card/80 backdrop-blur-sm border border-border rounded-lg p-8 shadow-lg">
             {state === "idle" && (
               <div className="flex flex-col items-center justify-center space-y-6">
                 <div className="relative">
