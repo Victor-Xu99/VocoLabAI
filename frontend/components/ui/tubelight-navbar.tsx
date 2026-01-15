@@ -62,7 +62,7 @@ export function NavBar({ className }: NavBarProps) {
         className
       )}
     >
-      <div className="flex items-center gap-3 bg-black/50 dark:bg-black/60 border border-white/10 backdrop-blur-lg py-1 px-1 rounded-full shadow-lg">
+      <div className="flex items-center gap-3 bg-black/50 dark:bg-black/60 border border-white/10 backdrop-blur-lg py-1 px-1 rounded-full shadow-lg overflow-visible">
         {items.map((item) => {
           const Icon = item.icon;
           const isActive = activeTab === item.name;
@@ -73,7 +73,7 @@ export function NavBar({ className }: NavBarProps) {
               href={item.url}
               onClick={() => setActiveTab(item.name)}
               className={cn(
-                "relative cursor-pointer text-sm font-semibold px-6 py-2 rounded-full transition-colors",
+                "relative cursor-pointer text-sm font-semibold px-6 py-2 rounded-full transition-colors overflow-visible",
                 "text-white/80 hover:text-white",
                 isActive && "bg-white/10 text-white",
 
@@ -86,13 +86,19 @@ export function NavBar({ className }: NavBarProps) {
               )}
               {isActive && (
                 <motion.div
-                  layoutId="lamp"
+                  layoutId={`lamp-${pathname}`}
                   className="absolute inset-0 w-full bg-primary/5 rounded-full -z-10"
-                  initial={false}
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  style={{ position: 'absolute' }}
                   transition={{
-                    type: "spring",
-                    stiffness: 300,
-                    damping: 30,
+                    opacity: { duration: 0.2 },
+                    scale: { duration: 0.2 },
+                    layout: {
+                      type: "spring",
+                      stiffness: 300,
+                      damping: 30,
+                    }
                   }}
                 >
                   <div className="absolute -top-2 left-1/2 -translate-x-1/2 w-8 h-1 bg-primary rounded-t-full">
