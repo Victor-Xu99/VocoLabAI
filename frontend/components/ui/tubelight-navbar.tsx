@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import { motion } from "motion/react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Home, DollarSign, Info, Download, PlayCircle } from "lucide-react";
+import { Home, DollarSign, Info, Download, PlayCircle, LayoutDashboard } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface NavItem {
@@ -21,6 +21,7 @@ export function NavBar({ className }: NavBarProps) {
   const pathname = usePathname();
   const items: NavItem[] = [
     { name: "Home", url: "/", icon: Home },
+    { name: "Dashboard", url: "/dashboard", icon: LayoutDashboard },
     { name: "Demo", url: "/demo", icon: PlayCircle },
     { name: "Pricing", url: "/pricing", icon: DollarSign },
     { name: "About", url: "/about", icon: Info },

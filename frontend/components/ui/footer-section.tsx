@@ -109,16 +109,15 @@ type ViewAnimationProps = {
 function AnimatedContainer({ className, delay = 0.1, children }: ViewAnimationProps) {
 	const shouldReduceMotion = useReducedMotion();
 
-	if (shouldReduceMotion) {
-		return children;
-	}
-
+	// Always return the same structure (motion.div) to prevent hydration mismatch
+	// Use the same initial state on server and client - start visible if motion reduced
+	// Otherwise, start hidden and animate in
 	return (
 		<motion.div
-			initial={{ filter: 'blur(4px)', translateY: -8, opacity: 0 }}
-			whileInView={{ filter: 'blur(0px)', translateY: 0, opacity: 1 }}
+			initial={shouldReduceMotion ? { opacity: 1, filter: 'blur(0px)', translateY: 0 } : { filter: 'blur(4px)', translateY: -8, opacity: 0 }}
+			whileInView={shouldReduceMotion ? false : { filter: 'blur(0px)', translateY: 0, opacity: 1 }}
 			viewport={{ once: true }}
-			transition={{ delay, duration: 0.8 }}
+			transition={shouldReduceMotion ? undefined : { delay, duration: 0.8 }}
 			className={className}
 		>
 			{children}
