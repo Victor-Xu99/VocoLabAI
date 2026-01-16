@@ -82,14 +82,8 @@ const Feature108 = ({
   ],
 }: Feature108Props) => {
   return (
-<<<<<<< Updated upstream
-    <section className="py-32 bg-gradient-to-b from-blue-50 via-white to-pink-50">
-      
-      <div className="container mx-auto px-4">
-=======
     <section className="py-32 bg-white">
       <div className="container mx-auto">
->>>>>>> Stashed changes
         <div className="text-center mb-12">
           <p className="text-blue-600 font-semibold text-sm uppercase tracking-wide mb-2">{badge}</p>
           <h2 className="text-4xl font-bold text-gray-900 mb-4">{heading}</h2>
