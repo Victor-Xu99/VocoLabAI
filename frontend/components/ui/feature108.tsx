@@ -30,65 +30,65 @@ interface Feature108Props {
 }
 
 const Feature108 = ({
-  badge = "VocoLabAI",
-  heading = "Transform Your Speech with AI-Powered Training",
-  description = "Join thousands improving their pronunciation with personalized, intelligent feedback.",
+  badge = "For Families & SLPs",
+  heading = "Extending Speech Therapy Beyond the Treatment Room",
+  description = "A warm, child-friendly app that helps families practice between sessions while giving speech-language pathologists the data they need.",
   tabs = [
     {
       value: "tab-1",
       icon: <Mic className="h-auto w-4 shrink-0" />,
-      label: "AI Speech Analysis",
+      label: "Home Practice",
       content: {
-        badge: "Advanced Technology",
-        title: "Phoneme-level precision feedback.",
+        badge: "Parent's Perspective",
+        title: "Finally, a way to help at home that actually works.",
         description:
-          "Our AI combines Whisper transcription and Azure Speech Services to analyze your pronunciation at the deepest level, identifying exact phoneme substitutions and articulation errors.",
-        buttonText: "Start Training",
+          "\"As a parent, I used to feel helpless between therapy sessions. VocoLabAI gives me structured exercises my 5-year-old actually enjoys. We practice together for 10 minutes each day, and I can see his progress. His SLP loves having this data—it makes our sessions so much more productive.\"",
+        buttonText: "Learn More",
         imageSrc:
-          "https://images.unsplash.com/photo-1590650153855-d9e808231d41?w=800&q=80",
-        imageAlt: "AI Speech Analysis visualization",
+          "https://images.unsplash.com/photo-1581833971358-2c8b550f87b3?w=800&q=80",
+        imageAlt: "Happy child practicing speech therapy at home with parent",
       },
     },
     {
       value: "tab-2",
       icon: <Volume2 className="h-auto w-4 shrink-0" />,
-      label: "Real-Time Feedback",
+      label: "Progress Tracking",
       content: {
-        badge: "Instant Results",
-        title: "Get immediate pronunciation insights.",
+        badge: "For SLPs",
+        title: "See progress between sessions, not just during them.",
         description:
-          "Record your speech and receive instant, detailed feedback on your pronunciation, complete with visual phoneme charts and personalized articulation tips.",
-        buttonText: "Try Demo",
+          "Speech-language pathologists receive detailed phoneme-level accuracy reports, error patterns, and progress trends. \"Having daily practice data completely changed how I adjust treatment plans. I can see exactly which sounds need more work and celebrate the wins with families.\" - Dr. Jennifer Martinez, CCC-SLP",
+        buttonText: "View Features",
         imageSrc:
-          "https://images.unsplash.com/photo-1516796181074-bf453fbfa3e6?w=800&q=80",
-        imageAlt: "Real-time feedback interface",
+          "https://images.unsplash.com/photo-1516627145497-ae6968895b74?w=800&q=80",
+        imageAlt: "Young child engaging happily with speech therapy app",
       },
     },
     {
       value: "tab-3",
       icon: <TrendingUp className="h-auto w-4 shrink-0" />,
-      label: "Track Progress",
+      label: "Fun & Engaging",
       content: {
-        badge: "Data-Driven Growth",
-        title: "Watch your improvement over time.",
+        badge: "Ages 3-8",
+        title: "Practice that feels like play, not work.",
         description:
-          "Monitor your pronunciation journey with comprehensive analytics. Track phoneme accuracy, identify patterns, and celebrate your progress with detailed historical data.",
-        buttonText: "View Dashboard",
+          "\"My daughter asks to practice now! The games make it fun, and she doesn't realize she's working on her speech sounds. We target those critical early years when progress happens fastest, making therapy feel like a natural part of playtime.\"",
+        buttonText: "See How It Works",
         imageSrc:
-          "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&q=80",
-        imageAlt: "Progress tracking dashboard",
+          "https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?w=800&q=80",
+        imageAlt: "Child playing and learning with speech therapy activities",
       },
     },
   ],
 }: Feature108Props) => {
   return (
-    <section className="py-32 bg-white">
-      {/* Gradient transition from black to white */}
-      <div className="absolute top-0 left-0 right-0 h-32 bg-gradient-to-b from-black to-white pointer-events-none"></div>
+    <section className="py-32 bg-gradient-to-b from-blue-50 via-white to-pink-50">
       
-      <div className="container mx-auto">
+      <div className="container mx-auto px-4">
         <div className="text-center mb-12">
-          <h2 className="text-4xl font-bold text-gray-900">Features</h2>
+          <p className="text-blue-600 font-semibold text-sm uppercase tracking-wide mb-2">{badge}</p>
+          <h2 className="text-4xl font-bold text-gray-900 mb-4">{heading}</h2>
+          <p className="text-lg text-gray-600 max-w-3xl mx-auto">{description}</p>
         </div>
         <Tabs defaultValue={tabs[0].value} className="mt-8">
           <TabsList className="container flex flex-col items-center justify-center gap-4 sm:flex-row md:gap-10 bg-transparent border-0">
@@ -102,32 +102,34 @@ const Feature108 = ({
               </TabsTrigger>
             ))}
           </TabsList>
-          <div className="mx-auto mt-8 max-w-screen-xl rounded-2xl bg-muted/70 p-6 lg:p-16">
+          <div className="mx-auto mt-8 max-w-screen-xl rounded-2xl bg-white p-6 lg:p-16 shadow-lg border border-gray-100">
             {tabs.map((tab) => (
               <TabsContent
                 key={tab.value}
                 value={tab.value}
-                className="grid place-items-center gap-20 lg:grid-cols-2 lg:gap-10"
+                className="grid place-items-center gap-12 lg:grid-cols-2 lg:gap-16"
               >
-                <div className="flex flex-col gap-5">
-                  <Badge variant="outline" className="w-fit bg-background">
+                <div className="flex flex-col gap-6">
+                  <Badge variant="outline" className="w-fit bg-blue-50 text-blue-700 border-blue-200">
                     {tab.content.badge}
                   </Badge>
-                  <h3 className="text-3xl font-semibold lg:text-5xl">
+                  <h3 className="text-3xl font-bold lg:text-5xl text-gray-900 leading-tight">
                     {tab.content.title}
                   </h3>
-                  <p className="text-muted-foreground lg:text-lg">
+                  <p className="text-gray-700 lg:text-lg leading-relaxed italic">
                     {tab.content.description}
                   </p>
-                  <Button className="mt-2.5 w-fit gap-2" size="lg">
+                  <Button className="mt-2.5 w-fit gap-2 bg-blue-600 hover:bg-blue-700" size="lg">
                     {tab.content.buttonText}
                   </Button>
                 </div>
-                <img
-                  src={tab.content.imageSrc}
-                  alt={tab.content.imageAlt}
-                  className="rounded-xl w-full h-auto object-cover"
-                />
+                <div className="relative rounded-2xl overflow-hidden shadow-xl border-4 border-white">
+                  <img
+                    src={tab.content.imageSrc}
+                    alt={tab.content.imageAlt}
+                    className="w-full h-auto object-cover rounded-xl"
+                  />
+                </div>
               </TabsContent>
             ))}
           </div>

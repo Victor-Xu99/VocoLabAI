@@ -337,12 +337,12 @@ export const MusicReactiveHeroSection = () => {
       <canvas ref={canvasRef} className="visualization-canvas" />
       
       <div className="hero-content">
-        <p className="hero-tagline">Revolutionizing Speech Training with AI</p>
+        <p className="hero-tagline">Bridging Clinical Care and Daily Practice</p>
         <h1 className="hero-title">
           <span className="title-line">VOCOLAB</span>
           <span className="title-line">AI</span>
         </h1>
-        <p className="hero-subtitle">Transform your pronunciation with personalized, AI-powered speech therapy</p>
+        <p className="hero-subtitle">An AI-powered speech therapy companion for children, designed with speech-language pathologists to extend treatment beyond the clinical setting</p>
       </div>
     </div>
   );

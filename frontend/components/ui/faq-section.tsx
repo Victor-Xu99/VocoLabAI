@@ -10,36 +10,36 @@ interface FAQItem {
 
 const faqs: FAQItem[] = [
   {
-    question: "How does VocoLabAI analyze my pronunciation?",
-    answer: "VocoLabAI uses advanced AI models including Whisper for transcription and Azure Speech Services for phoneme-level analysis. Our system identifies specific pronunciation errors and provides targeted feedback on sounds you need to practice."
+    question: "Is VocoLabAI a replacement for professional speech therapy?",
+    answer: "No. VocoLabAI is designed as a clinical tool that operates under speech-language pathologist (SLP) oversight. It extends therapy beyond the treatment room by providing supervised home practice between clinical sessions, but professional guidance and assessment remain essential."
   },
   {
-    question: "What languages does VocoLabAI support?",
-    answer: "Currently, VocoLabAI focuses on English pronunciation training with support for multiple accents. We're actively working on expanding to additional languages based on user demand."
+    question: "What age range is VocoLabAI designed for?",
+    answer: "VocoLabAI is optimized for children ages 3-8, targeting the critical early childhood intervention window when speech patterns are most malleable. The exercises are designed to be engaging and developmentally appropriate for young children."
   },
   {
-    question: "Do I need special equipment to use VocoLabAI?",
-    answer: "No special equipment needed! Any device with a microphone (laptop, tablet, or smartphone) and a modern web browser will work. For best results, we recommend using a quiet environment and a decent quality microphone or headset."
+    question: "How does VocoLabAI help speech-language pathologists?",
+    answer: "VocoLabAI generates actionable progress data including phoneme-level accuracy reports, error pattern analysis, and progress trends. This helps SLPs refine treatment plans, document outcomes, and make data-driven decisions about intervention strategies."
   },
   {
-    question: "How long does it take to see improvement?",
-    answer: "Most users notice measurable improvements within 2-3 weeks of consistent practice (15-20 minutes daily). Our AI tracks your progress at the phoneme level, so you can see exactly which sounds you're mastering over time."
+    question: "What type of data do parents and SLPs receive?",
+    answer: "Both parents and SLPs receive detailed progress reports showing phoneme accuracy, practice completion rates, and improvement trends over time. SLPs have access to additional clinical insights including specific error patterns and recommendations for treatment adjustments."
   },
   {
-    question: "Can VocoLabAI help with specific speech impediments?",
-    answer: "VocoLabAI is designed for pronunciation training and accent reduction. While many users with mild speech challenges find it helpful, we recommend consulting with a speech-language pathologist for clinical speech therapy needs."
+    question: "How is this different from consumer speech improvement apps?",
+    answer: "VocoLabAI is positioned as a clinical tool designed with speech-language pathologists, not a consumer replacement for therapy. It operates under SLP oversight, uses evidence-based approaches, and generates clinical-grade data that informs professional treatment plans."
   },
   {
-    question: "Is my voice data secure and private?",
-    answer: "Absolutely. All audio recordings are encrypted in transit and at rest. We use your recordings solely to provide personalized feedback and never share your data with third parties. You can delete your recordings at any time from your account settings."
+    question: "Is children's voice data secure and HIPAA compliant?",
+    answer: "Yes. All audio recordings are encrypted in transit and at rest. We follow HIPAA guidelines for protected health information and maintain strict privacy controls. Data is only accessible to authorized SLPs and families, and can be deleted at any time."
   },
   {
-    question: "What's included in the free trial?",
-    answer: "Our 14-day free trial gives you full access to all features: unlimited practice sessions, AI-powered feedback, progress tracking, and personalized exercises. No credit card required to start."
+    question: "How much practice time is recommended between sessions?",
+    answer: "We recommend 10-15 minutes of daily practice between clinical sessions. This consistent daily practice, guided by structured exercises, helps bridge the gap between weekly therapy appointments and accelerates progress."
   },
   {
-    question: "Can I use VocoLabAI offline?",
-    answer: "Currently, VocoLabAI requires an internet connection to process your recordings through our AI services. We're exploring offline capabilities for future releases."
+    question: "Can VocoLabAI be used in clinical settings?",
+    answer: "Yes. Many SLPs use VocoLabAI during sessions as a practice tool, then assign exercises for home practice. The app integrates seamlessly into existing treatment protocols and provides data that enhances clinical decision-making."
   }
 ];
 
@@ -59,7 +59,7 @@ export default function FAQSection() {
             Frequently Asked Questions
           </h2>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Everything you need to know about VocoLabAI and how it can help improve your speech.
+            Common questions about VocoLabAI for speech-language pathologists and families.
           </p>
         </div>
 

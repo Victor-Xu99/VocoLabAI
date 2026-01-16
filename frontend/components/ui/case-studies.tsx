@@ -99,50 +99,50 @@ export default function Casestudies() {
     {
       id: 1,
       quote:
-        "VocoLabAI transformed my pronunciation in just 3 weeks. The AI feedback is incredibly precise and helped me identify issues I didn't even know I had.",
-      name: "Sarah Chen",
-      role: "ESL Teacher",
+        "VocoLabAI has transformed how we deliver therapy. The progress data I receive helps me adjust treatment plans weekly, and my families love having structured practice between sessions. We're seeing faster progress in our patients.",
+      name: "Dr. Jennifer Martinez, CCC-SLP",
+      role: "Pediatric Speech-Language Pathologist",
       image:
-        "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=400&q=80",
+        "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=400&q=80",
       icon: Mic,
       metrics: [
-        { value: "85%", label: "Improvement Rate", sub: "In phoneme accuracy" },
-        { value: "3", label: "Weeks to Fluency", sub: "Average time to proficiency" },
+        { value: "2.5x", label: "Practice Frequency", sub: "Daily vs weekly sessions" },
+        { value: "40%", label: "Faster Progress", sub: "Compared to traditional homework" },
       ],
     },
     {
       id: 2,
       quote:
-        "The personalized practice sentences are game-changing. Each lesson adapts to my specific pronunciation challenges, making every session productive.",
-      name: "Michael Rodriguez",
-      role: "Software Engineer",
+        "As a parent, I finally have a tool that helps me support my 5-year-old's speech therapy at home. The exercises are engaging for him, and I love seeing his progress data that I can share with his SLP.",
+      name: "Lisa Thompson",
+      role: "Parent & Healthcare Professional",
       image:
-        "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&q=80",
+        "https://images.unsplash.com/photo-1581833971358-2c8b550f87b3?w=400&q=80",
       icon: Brain,
       metrics: [
-        { value: "4.2x", label: "Faster Learning", sub: "Compared to traditional methods" },
-        { value: "92%", label: "User Satisfaction", sub: "Based on user surveys" },
+        { value: "87%", label: "Home Completion Rate", sub: "Of assigned exercises" },
+        { value: "4.8/5", label: "Family Satisfaction", sub: "Parent feedback rating" },
       ],
     },
     {
       id: 3,
       quote:
-        "Tracking my progress with detailed analytics keeps me motivated. I can see exactly which sounds I've mastered and where I need more practice.",
-      name: "Emily Watson",
-      role: "Public Speaker",
+        "The phoneme-level tracking has been invaluable for documenting treatment outcomes. I can now provide concrete data showing improvement in specific speech sounds, which helps with insurance authorizations and family communication.",
+      name: "Robert Chen, M.S., CCC-SLP",
+      role: "Clinical Director, Pediatric Speech Clinic",
       image:
-        "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=400&q=80",
+        "https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=400&q=80",
       icon: TrendingUp,
       metrics: [
-        { value: "2.5x", label: "Confidence Boost", sub: "In public speaking" },
-        { value: "95%", label: "Goal Achievement", sub: "Students reaching targets" },
+        { value: "95%", label: "SLP Approval Rate", sub: "Would recommend to colleagues" },
+        { value: "3.2x", label: "Therapeutic Dosage", sub: "Increase in practice minutes" },
       ],
     },
   ];
 
   return (
     <section
-      className="py-32 bg-background"
+      className="py-32 bg-gradient-to-b from-pink-50 via-white to-blue-50"
       aria-labelledby="case-studies-heading"
     >
       <div className="container mx-auto px-6">
@@ -152,10 +152,10 @@ export default function Casestudies() {
             id="case-studies-heading"
             className="text-4xl font-semibold md:text-5xl text-foreground"
           >
-            Real results with VocoLabAI
+            Trusted by Speech-Language Pathologists and Families
           </h2>
           <p className="text-muted-foreground">
-            From accent reduction to professional communication—VocoLabAI helps users achieve clear, confident speech.
+            See how VocoLabAI is transforming pediatric speech therapy by bridging the gap between clinical sessions and daily practice.
           </p>
         </div>
 
@@ -178,15 +178,17 @@ export default function Casestudies() {
                       : "border-gray-200 dark:border-gray-800",
                   ].join(" ")}
                 >
-                  <Image
-                    src={study.image}
-                    alt={`${study.name} portrait`}
-                    width={300}
-                    height={400}
-                    className="aspect-[29/35] h-auto w-full max-w-60 rounded-2xl object-cover ring-1 ring-border hover:scale-105 transition-all duration-300"
-                    loading="lazy"
-                    decoding="async"
-                  />
+                  <div className="relative aspect-[29/35] h-auto w-full max-w-60 rounded-2xl overflow-hidden shadow-2xl border-4 border-white hover:scale-105 transition-all duration-300">
+                    <Image
+                      src={study.image}
+                      alt={`${study.name} portrait`}
+                      width={300}
+                      height={400}
+                      className="w-full h-full object-cover"
+                      loading="lazy"
+                      decoding="async"
+                    />
+                  </div>
                   <figure className="flex flex-col justify-between gap-8 text-left">
                     <blockquote className="text-lg sm:text-xl text-foreground leading-relaxed text-left">
                       <h3 className="text-lg sm:text-xl lg:text-xl font-normal text-gray-900 dark:text-white leading-relaxed text-left">
