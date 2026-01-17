@@ -77,6 +77,9 @@ export default function Home() {
           colors={["#38bdf8", "#ffffff", "#38bdf8"]}
         />
         
+        {/* Gradient overlay for seamless transition */}
+        <div className="absolute bottom-0 left-0 right-0 h-48 bg-gradient-to-b from-transparent via-white/50 to-white z-[5] pointer-events-none" />
+        
         {/* Content */}
         <HeroContent />
         
