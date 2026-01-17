@@ -58,7 +58,7 @@ const HeroContent = memo(() => {
             setTimeout(() => setSloganComplete(true), 300);
           }}
         >
-          BRINGING CLINICAL EXPERTISE INTO EVERYDAY PRACTICE
+          POWERING EVERYDAY PRACTICE WITH CLININIAL EXPERTISE
         </TextEffect>
       </motion.div>
     </div>
