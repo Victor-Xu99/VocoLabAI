@@ -82,7 +82,7 @@ const Feature108 = ({
   ],
 }: Feature108Props) => {
   return (
-    <section className="py-32 bg-gradient-to-b from-white via-sky-50/30 to-white">
+    <section className="py-32 bg-white">
       <div className="container mx-auto">
         <div className="text-center mb-12">
           <p className="text-blue-600 font-semibold text-sm uppercase tracking-wide mb-2">{badge}</p>
