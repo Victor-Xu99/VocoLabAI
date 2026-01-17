@@ -117,7 +117,7 @@ export default function Casestudies() {
       name: "Lisa Thompson",
       role: "Parent & Healthcare Professional",
       image:
-        "https://images.unsplash.com/photo-1581833971358-2c8b550f87b3?w=400&q=80",
+        "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=400&q=80",
       icon: Brain,
       metrics: [
         { value: "87%", label: "Home Completion Rate", sub: "Of assigned exercises" },

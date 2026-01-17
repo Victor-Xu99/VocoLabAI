@@ -45,7 +45,7 @@ const Feature108 = ({
           "\"As a parent, I used to feel helpless between therapy sessions. VocoLabAI gives me structured exercises my 5-year-old actually enjoys. We practice together for 10 minutes each day, and I can see his progress. His SLP loves having this data—it makes our sessions so much more productive.\"",
         buttonText: "Learn More",
         imageSrc:
-          "https://images.unsplash.com/photo-1581833971358-2c8b550f87b3?w=800&q=80",
+          "https://images.unsplash.com/photo-1509062522246-3755977927d7?w=800&q=80",
         imageAlt: "Happy child practicing speech therapy at home with parent",
       },
     },
